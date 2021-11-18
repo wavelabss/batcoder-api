@@ -1,21 +1,29 @@
-import { v4 as uuidv4 } from 'uuid'
-import { dataBase } from '../database'
-import { IChallenge } from '../models/challenge'
+import { Challenge, IChallenge } from '../models/challenge'
 
 export class ChallengeService {
-  public findAll() {
-    return dataBase
+  public async findAll() {
+    try {
+      return await Challenge.find()
+    } catch (error) {
+      return {
+        code: 500,
+        message: 'Something went wrong'
+      }
+    }
   }
 
-  public findById(id: string) {
-    const challenge = dataBase.find(challenge => challenge._id === id)
-
-    if (!challenge) return { message: 'Challenge not found' }
-
-    return challenge
+  public async findById(id: string) {
+    try {
+      return await Challenge.findById({ _id: id })
+    } catch (error) {
+      return {
+        code: 404,
+        message: 'Challenge not found'
+      }
+    }
   }
 
-  public create({
+  public async create({
     slug,
     title,
     shortDescription,
@@ -23,25 +31,23 @@ export class ChallengeService {
     cover,
     repository
   }: Omit<IChallenge, '_id'>) {
-    if (!slug) return { error: 'Please provide a slug' }
+    try {
+      const newChallenge = {
+        slug,
+        title,
+        shortDescription,
+        longDescription,
+        cover,
+        repository
+      }
 
-    const challenge = dataBase.find(challenge => challenge.slug === slug)
-
-    if (challenge) return { error: 'Challenge already exists' }
-
-    const newChallenge = {
-      _id: uuidv4(),
-      slug,
-      title,
-      shortDescription,
-      longDescription,
-      cover,
-      repository
+      return await Challenge.create(newChallenge)
+    } catch (error) {
+      return {
+        code: 500,
+        message: 'Something went wrong'
+      }
     }
-
-    dataBase.push(newChallenge)
-
-    return newChallenge
   }
 
   public update({
@@ -53,29 +59,14 @@ export class ChallengeService {
     cover,
     repository
   }: IChallenge) {
-    const challenge = dataBase.find(challenge => challenge._id === _id)
 
-    if (!challenge) return { error: 'Challenge not found' }
-
-    challenge.slug = slug
-    challenge.title = title
-    challenge.shortDescription = shortDescription
-    challenge.longDescription = longDescription
-    challenge.cover = cover
-    challenge.repository = repository
-
-    return challenge
   }
 
-  public delete(id: string) {
-    const challengeIndex = dataBase.findIndex(challenge => challenge._id === id)
+  public async delete(id: string) {
+    try {
+      return await Challenge.deleteOne({ _id: id })
+    } catch (error) {
 
-    if (challengeIndex === -1) {
-      return { error: 'Challenge not found' }
     }
-
-    dataBase.splice(challengeIndex, 1)
-
-    return { message: 'Challenge deleted' }
   }
 }

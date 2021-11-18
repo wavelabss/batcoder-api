@@ -4,17 +4,17 @@ import { ChallengeService } from '../services/ChallengesServices'
 const challengeService = new ChallengeService()
 
 export class ChallengesController {
-  public findAll(_: Request, response: Response) {
-    return response.status(200).json(challengeService.findAll())
+  public async findAll(_: Request, response: Response) {
+    return response.status(200).json(await challengeService.findAll())
   }
 
-  public findById(request: Request, response: Response) {
+  public async findById(request: Request, response: Response) {
     const { id } = request.params
 
-    return response.status(200).json(challengeService.findById(id))
+    return response.status(200).json(await challengeService.findById(id))
   }
 
-  public create(request: Request, response: Response) {
+  public async create(request: Request, response: Response) {
     const {
       slug,
       title,
@@ -24,7 +24,7 @@ export class ChallengesController {
       repository
     } = request.body
 
-    return response.status(201).json(challengeService.create({
+    return response.status(201).json(await challengeService.create({
       slug,
       title,
       shortDescription,
@@ -34,7 +34,7 @@ export class ChallengesController {
     }))
   }
 
-  public update(request: Request, response: Response) {
+  public async update(request: Request, response: Response) {
     const {
       slug,
       title,
@@ -46,7 +46,7 @@ export class ChallengesController {
 
     const { id } = request.params
 
-    return response.status(200).json(challengeService.update({
+    return response.status(200).json(await challengeService.update({
       _id: id,
       slug,
       title,
@@ -57,9 +57,9 @@ export class ChallengesController {
     }))
   }
 
-  public delete(request: Request, response: Response) {
+  public async delete(request: Request, response: Response) {
     const { id } = request.params
 
-    return response.status(200).json(challengeService.delete(id))
+    return response.status(200).json(await challengeService.delete(id))
   }
 }
