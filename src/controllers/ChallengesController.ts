@@ -47,7 +47,7 @@ export class ChallengesController {
     const { id } = request.params
 
     return response.status(200).json(challengeService.update({
-      id,
+      _id: id,
       slug,
       title,
       shortDescription,

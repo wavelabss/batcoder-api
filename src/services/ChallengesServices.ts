@@ -1,15 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { dataBase } from '../database'
-
-interface IBodyCreateChallenge {
-  id: string
-  slug: string
-  title: string
-  shortDescription: string
-  longDescription: string
-  cover: string
-  repository: string
-}
+import { IChallenge } from '../models/challenge'
 
 export class ChallengeService {
   public findAll() {
@@ -17,7 +8,7 @@ export class ChallengeService {
   }
 
   public findById(id: string) {
-    const challenge = dataBase.find(challenge => challenge.id === id)
+    const challenge = dataBase.find(challenge => challenge._id === id)
 
     if (!challenge) return { message: 'Challenge not found' }
 
@@ -31,7 +22,7 @@ export class ChallengeService {
     longDescription,
     cover,
     repository
-  }: Omit<IBodyCreateChallenge, 'id'>) {
+  }: Omit<IChallenge, '_id'>) {
     if (!slug) return { error: 'Please provide a slug' }
 
     const challenge = dataBase.find(challenge => challenge.slug === slug)
@@ -39,7 +30,7 @@ export class ChallengeService {
     if (challenge) return { error: 'Challenge already exists' }
 
     const newChallenge = {
-      id: uuidv4(),
+      _id: uuidv4(),
       slug,
       title,
       shortDescription,
@@ -54,15 +45,15 @@ export class ChallengeService {
   }
 
   public update({
-    id,
+    _id,
     slug,
     title,
     shortDescription,
     longDescription,
     cover,
     repository
-  }: IBodyCreateChallenge) {
-    const challenge = dataBase.find(challenge => challenge.id === id)
+  }: IChallenge) {
+    const challenge = dataBase.find(challenge => challenge._id === _id)
 
     if (!challenge) return { error: 'Challenge not found' }
 
@@ -77,7 +68,7 @@ export class ChallengeService {
   }
 
   public delete(id: string) {
-    const challengeIndex = dataBase.findIndex(challenge => challenge.id === id)
+    const challengeIndex = dataBase.findIndex(challenge => challenge._id === id)
 
     if (challengeIndex === -1) {
       return { error: 'Challenge not found' }
