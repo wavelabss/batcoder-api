@@ -1,3 +1,6 @@
-import { IChallenge } from '../models/challenge'
+import mongoose, { Mongoose } from 'mongoose'
 
-export const dataBase: Array<IChallenge> = []
+export const connect = async (): Promise<Mongoose> =>
+  await mongoose.connect(`${process.env.MONGODB_URL}`)
+
+export const close = (): Promise<void> => mongoose.connection.close()
