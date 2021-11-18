@@ -1,8 +1,12 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import routes from './routes/challenges'
+import { connect } from './database'
+
+dotenv.config()
 
 const app = express()
-app.listen(3333)
+connect()
+app.listen(process.env.PORT)
 app.use(express.json())
 app.use(routes)
-
